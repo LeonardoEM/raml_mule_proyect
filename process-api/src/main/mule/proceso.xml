@@ -9,14 +9,23 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener-connection host="0.0.0.0" port="8083" />
 	</http:listener-config>
 	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1a2fb447-492f-485c-bc8a-2f4c1f09c985" >
-		<http:request-connection host="localhost" port="8084" />
+		<http:request-connection host="localhost" port="8083" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="715a3060-ea42-4b34-8a27-c7aa5b79ebf7" basePath="/system-hr" >
+		<http:request-connection host="localhost" port="8082" >
+			<http:proxy-config >
+				<http:proxy />
+			</http:proxy-config>
+		</http:request-connection>
 	</http:request-config>
 	<flow name="procesoFlow" doc:id="cb9b5aad-ba0d-4734-a0e3-cb227fc489cd" >
 		<http:listener doc:name="Listener" doc:id="cad2b8e8-056a-454a-aea9-b80b90cbb2c5" config-ref="HTTP_Listener_config" path="/exp/{idPokeApi}"/>
-		<http:request method="GET" doc:name="Request" doc:id="cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396" config-ref="HTTP_Request_configuration" path="/">
-			<http:body ><![CDATA[#[output application/json
+		<http:request method="GET" doc:name="Request" doc:id="cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396" config-ref="HTTP_Request_configuration" path="/system/pokeapi-obtenerPokemon/{id}">
+			<http:uri-params ><![CDATA[#[output application/java
 ---
-attributes.uriParams.id]]]></http:body>
+{
+	id : attributes.uriParams.idPokeApi
+}]]]></http:uri-params>
 		</http:request>
 		<logger level="INFO" doc:name="Logger" doc:id="2d9b5c4b-121d-4440-a675-22e5299ff059" message="#[payload]"/>
 		<ee:transform doc:name="Transform Message" doc:id="f6e09986-e4ae-4b4b-a3e2-49b758f238e7" >
@@ -25,13 +34,12 @@ attributes.uriParams.id]]]></http:body>
 output application/json
 ---
 {
-	base_experience: payload.experience,
+	base_experience: payload.base_experience,
 	name: payload.name,
-	ability: payload.ability,
-	sysdate: server.timeZone,
-	ability2: payload.ability2
+	ability: payload.abilities.ability.name
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<http:request method="POST" doc:name="Request" doc:id="6cd0df1f-4e86-4db7-80f2-d3940a7038c6" config-ref="HTTP_Request_configuration1" path="/insert"/>
 	</flow>
 </mule>

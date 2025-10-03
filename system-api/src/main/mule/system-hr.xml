@@ -9,10 +9,11 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<http:listener-connection host="0.0.0.0" port="8082" />
 	</http:listener-config>
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="bc647e5e-8c4e-4a97-bfe8-997f61247dce" >
-		<db:oracle-connection host="localhost" user="hr" password="1234" serviceName="ORCLPDB" />
+		<db:oracle-connection host="localhost" user="system" password="1234" serviceName="ORCLPDB2" port="1523"/>
 	</db:config>
 	<flow name="system-hr-insert" doc:id="f0fd5f97-8e30-4218-9636-d786cc177525" >
 		<http:listener doc:name="Listener" doc:id="91743bf6-c3de-415c-9da6-f32243e993c7" config-ref="cfg_http_hr" path="/insert" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="807e9d53-d26b-427a-966c-29e30623c266" message="#[payload]"/>
 		<db:insert doc:name="Insert" doc:id="d4d48497-4917-460d-965e-8f5a17e9ecad" config-ref="Database_Config">
 			<db:sql ><![CDATA[INSERT INTO HR.EMPLOYEES (EMPLOYEE_ID,LAST_NAME,EMAIL,HIRE_DATE,JOB_ID) 
 VALUES (:base_experience,:name,:ability,SYSDATE,'AD_PRES')
@@ -21,9 +22,9 @@ VALUES (:base_experience,:name,:ability,SYSDATE,'AD_PRES')
 ---
 
 {
-	base_experience: 1,
-	name: "Ana Pau Rosales",
-	ability: "Trabajar"
+	base_experience: payload.base_experience,
+	name: payload.name,
+	ability: payload.ability
 }]]]></db:input-parameters>
 		</db:insert>
 	</flow>
