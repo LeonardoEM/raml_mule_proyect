@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e91e25c0-5a33-488f-be27-f9f42382c04f" basePath="/proceso">
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1a2fb447-492f-485c-bc8a-2f4c1f09c985" >
+		<http:request-connection host="localhost" port="8084" />
+	</http:request-config>
+	<flow name="procesoFlow" doc:id="cb9b5aad-ba0d-4734-a0e3-cb227fc489cd" >
+		<http:listener doc:name="Listener" doc:id="cad2b8e8-056a-454a-aea9-b80b90cbb2c5" config-ref="HTTP_Listener_config" path="/exp/{idPokeApi}"/>
+		<http:request method="GET" doc:name="Request" doc:id="cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396" config-ref="HTTP_Request_configuration" path="/">
+			<http:body ><![CDATA[#[output application/json
+---
+attributes.uriParams.id]]]></http:body>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="2d9b5c4b-121d-4440-a675-22e5299ff059" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="f6e09986-e4ae-4b4b-a3e2-49b758f238e7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	base_experience: payload.experience,
+	name: payload.name,
+	ability: payload.ability,
+	sysdate: server.timeZone,
+	ability2: payload.ability2
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

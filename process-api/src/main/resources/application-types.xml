@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="jsonPokeApi" format="json">
+      <types:shape format="weave" example="examples/solicitudPokeApi.json"><![CDATA[%dw 2.0
+
+type jsonPokeApi = {| id: String |} {"example": "{\\\"id\\\":\\\"1\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="responsePokeApi" format="json">
+      <types:shape format="weave" example="examples/responsePokeApi.json"><![CDATA[%dw 2.0
+
+type responsePokeApi = {|
+  experience: String, 
+  name: String, 
+  ability: String, 
+  sysdate: String, 
+  ability2: String
+|} {"example": "{\\\"experience\\\":\\\"ola\\\",\\\"name\\\":\\\"a\\\",\\\"ability\\\":\\\"todos\\\",\\\"sysdate\\\":\\\"sysdate\\\",\\\"ability2\\\":\\\"ability2\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="jsonDB" format="json">
+      <types:shape format="weave" example="examples/solicitudDB.json"><![CDATA[%dw 2.0
+
+type jsonDB = {|
+  base_experience: String, 
+  name: String, 
+  ability: String, 
+  sysdate: String, 
+  ability2: String
+|} {"example": "{\\\"base_experience\\\":\\\"ola\\\",\\\"name\\\":\\\"a\\\",\\\"ability\\\":\\\"todos\\\",\\\"sysdate\\\":\\\"sysdate\\\",\\\"ability2\\\":\\\"ability2\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="jsonPokeApi"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f6e09986-e4ae-4b4b-a3e2-49b758f238e7">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="responsePokeApi"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="jsonDB"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
