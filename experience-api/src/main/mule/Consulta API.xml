@@ -7,13 +7,13 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="cfg_http_postman" doc:name="HTTP Listener config" doc:id="37dcb427-765a-4e61-8dfb-4332e55c836a" basePath="/">
 		<http:listener-connection host="0.0.0.0" port="8080" />
 	</http:listener-config>
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e49a0729-5543-49d0-aaaa-04deb7a0c9fa" >
-		<http:request-connection host="localhost" port="8081" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e49a0729-5543-49d0-aaaa-04deb7a0c9fa" basePath="/proceso">
+		<http:request-connection host="localhost" port="8098" />
 	</http:request-config>
 	<flow name="Consulta_APIFlow" doc:id="fae23b23-896c-42a6-bcfa-4172fb312c00" >
 		<http:listener doc:name="Listener" doc:id="0c6abc1d-d81d-4482-98b6-6a7c22fd727a" config-ref="cfg_http_postman" path="obtenerPoke/[id]"/>
 		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="16d1d2a9-7218-4405-b733-ba79362eb77a" variableName="idPokemon"/>
-		<http:request method="DELETE" doc:name="Request" doc:id="ce213ed5-539f-4431-b55c-6e055e26b54e" path="/process" config-ref="HTTP_Request_configuration">
+		<http:request method="GET" doc:name="Request" doc:id="ce213ed5-539f-4431-b55c-6e055e26b54e" path="/exp/{id}" config-ref="HTTP_Request_configuration">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
