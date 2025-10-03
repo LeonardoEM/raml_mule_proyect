@@ -4,8 +4,21 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="cfg_http_pokeapi" doc:name="HTTP Listener config" doc:id="660ae995-434c-4b16-806c-4c1d837e1256" basePath="/system-pokeapi" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="893ee4ab-22a5-4f23-b697-780b6af8b0de" >
+		<http:request-connection host="pokeapi.co" protocol="HTTPS"/>
+	</http:request-config>
 	<flow name="system-apiFlow" doc:id="69187704-4498-4cba-baeb-673874d84ae7" >
-		<http:listener doc:name="Listener" doc:id="154135c7-7493-4370-9c1c-fcb81258eee4" />
-		<http:request method="GET" doc:name="Request" doc:id="0bd3b7aa-68b5-478a-b468-e88bb1aeadf1" />
+		<http:listener doc:name="Listener" doc:id="154135c7-7493-4370-9c1c-fcb81258eee4" config-ref="cfg_http_pokeapi" path="/obtenerPokemon/{id}" allowedMethods="GET"/>
+		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="7f813d5c-6413-4277-9b17-c8252f7af037" variableName="idPokemon"/>
+		<http:request method="GET" doc:name="Request" doc:id="0bd3b7aa-68b5-478a-b468-e88bb1aeadf1" config-ref="HTTP_Request_configuration" path="/api/v2/pokemon/{endpoint}">
+			<http:uri-params ><![CDATA[#[output application/java
+---
+{
+	endpoint : vars.idPokemon
+}]]]></http:uri-params>
+		</http:request>
 	</flow>
 </mule>
