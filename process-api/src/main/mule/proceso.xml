@@ -13,9 +13,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="715a3060-ea42-4b34-8a27-c7aa5b79ebf7" basePath="/system-hr" >
 		<http:request-connection host="localhost" port="8082" >
-			<http:proxy-config >
-				<http:proxy />
-			</http:proxy-config>
 		</http:request-connection>
 	</http:request-config>
 	<flow name="procesoFlow" doc:id="cb9b5aad-ba0d-4734-a0e3-cb227fc489cd" >
