@@ -13,14 +13,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</http:request-config>
 	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="715a3060-ea42-4b34-8a27-c7aa5b79ebf7" basePath="/system-hr" >
 		<http:request-connection host="localhost" port="8082" >
-			<http:proxy-config >
-				<http:proxy />
-			</http:proxy-config>
 		</http:request-connection>
 	</http:request-config>
 	<flow name="procesoFlow" doc:id="cb9b5aad-ba0d-4734-a0e3-cb227fc489cd" >
 		<http:listener doc:name="Listener" doc:id="cad2b8e8-056a-454a-aea9-b80b90cbb2c5" config-ref="HTTP_Listener_config" path="/exp/{idPokeApi}"/>
-		<http:request method="GET" doc:name="Request" doc:id="cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396" config-ref="HTTP_Request_configuration" path="/system/pokeapi-obtenerPokemon/{id}">
+		<http:request method="GET" doc:name="Request" doc:id="cd1eb1a6-b7ef-4909-a0ec-2542ca4a0396" config-ref="HTTP_Request_configuration" path="/system-pokeapi/obtenerPokemon/{id}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -36,7 +33,7 @@ output application/json
 {
 	base_experience: payload.base_experience,
 	name: payload.name,
-	ability: payload.abilities.ability.name
+	ability: payload.abilities[0].ability.name
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
